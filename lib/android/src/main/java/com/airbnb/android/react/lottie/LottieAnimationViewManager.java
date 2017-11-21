@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.support.v4.view.ViewCompat;
 
 import android.util.Log;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -13,98 +14,148 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
+import android.widget.ImageView;
+
 import java.util.Map;
 
 class LottieAnimationViewManager extends SimpleViewManager<LottieAnimationView> {
-  private static final String TAG = LottieAnimationViewManager.class.getSimpleName();
-  private static final String REACT_CLASS = "LottieAnimationView";
-  private static final int VERSION = 1;
-  private static final int COMMAND_PLAY = 1;
-  private static final int COMMAND_RESET = 2;
+    private static final String TAG = LottieAnimationViewManager.class.getSimpleName();
+    private static final String REACT_CLASS = "LottieAnimationView";
+    private static final int VERSION = 1;
+    private static final int COMMAND_PLAY = 1;
+    private static final int COMMAND_RESET = 2;
 
-  @Override public Map<String, Object> getExportedViewConstants() {
-    return MapBuilder.<String, Object>builder()
-        .put("VERSION", VERSION)
-        .build();
-  }
-
-  @Override public String getName() {
-    return REACT_CLASS;
-  }
-
-  @Override public LottieAnimationView createViewInstance(ThemedReactContext context) {
-    return new LottieAnimationView(context);
-  }
-
-  @Override public Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of(
-        "play", COMMAND_PLAY,
-        "reset", COMMAND_RESET
-    );
-  }
-
-  @Override
-  public void receiveCommand(final LottieAnimationView view, int commandId, ReadableArray args) {
-    switch (commandId) {
-      case COMMAND_PLAY: {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-          @Override public void run() {
-            if (ViewCompat.isAttachedToWindow(view)) {
-              view.setProgress(0f);
-              view.playAnimation();
-            }
-          }
-        });
-      }
-      break;
-      case COMMAND_RESET: {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-          @Override public void run() {
-            if (ViewCompat.isAttachedToWindow(view)) {
-              view.cancelAnimation();
-              view.setProgress(0f);
-            }
-          }
-        });
-      }
-      break;
+    @Override
+    public Map<String, Object> getExportedViewConstants() {
+        return MapBuilder.<String, Object>builder()
+                .put("VERSION", VERSION)
+                .build();
     }
-  }
 
-  // TODO: cache strategy
-
-  @ReactProp(name = "sourceName")
-  public void setSourceName(LottieAnimationView view, String name) {
-    view.setAnimation(name);
-  }
-
-  @ReactProp(name = "sourceJson")
-  public void setSourceJson(LottieAnimationView view, ReadableMap json) {
-    try {
-        view.setAnimation(new JSONReadableMap(json));
-    } catch (Exception e) {
-      // TODO: expose this to the user better. maybe an `onError` event?
-      Log.e(TAG,"setSourceJsonError", e);
+    @Override
+    public String getName() {
+        return REACT_CLASS;
     }
-  }
 
-  @ReactProp(name = "progress")
-  public void setProgress(LottieAnimationView view, float progress) {
-    view.setProgress(progress);
-  }
+    @Override
+    public LottieAnimationView createViewInstance(ThemedReactContext context) {
+        return new LottieAnimationView(context);
+    }
 
-  @ReactProp(name = "speed")
-  public void setSpeed(LottieAnimationView view, double speed) {
-    // TODO?
-  }
+    @Override
+    public Map<String, Integer> getCommandsMap() {
+        return MapBuilder.of(
+                "play", COMMAND_PLAY,
+                "reset", COMMAND_RESET
+        );
+    }
 
-  @ReactProp(name = "loop")
-  public void setLoop(LottieAnimationView view, boolean loop) {
-    view.loop(loop);
-  }
+    @Override
+    public void receiveCommand(final LottieAnimationView view, int commandId, ReadableArray args) {
+        switch (commandId) {
+            case COMMAND_PLAY: {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (ViewCompat.isAttachedToWindow(view)) {
+                            view.setProgress(0f);
+                            view.playAnimation();
+                        }
+                    }
+                });
+            }
+            break;
+            case COMMAND_RESET: {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (ViewCompat.isAttachedToWindow(view)) {
+                            view.cancelAnimation();
+                            view.setProgress(0f);
+                        }
+                    }
+                });
+            }
+            break;
+        }
+    }
 
-  @ReactProp(name = "imageAssetsFolder")
-  public void setImageAssetsFolder(LottieAnimationView view, String imageAssetsFolder) {
-    view.setImageAssetsFolder(imageAssetsFolder);
-  }
+    // TODO: cache strategy
+
+    @ReactProp(name = "sourceName")
+    public void setSourceName(LottieAnimationView view, String name) {
+        view.setAnimation(name);
+    }
+
+    @ReactProp(name = "sourceJson")
+    public void setSourceJson(LottieAnimationView view, ReadableMap json) {
+        try {
+            view.setAnimation(new JSONReadableMap(json));
+        } catch (Exception e) {
+            // TODO: expose this to the user better. maybe an `onError` event?
+            Log.e(TAG, "setSourceJsonError", e);
+        }
+    }
+
+    @ReactProp(name = "progress")
+    public void setProgress(LottieAnimationView view, float progress) {
+        view.setProgress(progress);
+    }
+
+    @ReactProp(name = "speed")
+    public void setSpeed(LottieAnimationView view, double speed) {
+        // TODO?
+    }
+
+    @ReactProp(name = "loop")
+    public void setLoop(LottieAnimationView view, boolean loop) {
+        view.loop(loop);
+    }
+
+    @ReactProp(name = "imageAssetsFolder")
+    public void setImageAssetsFolder(LottieAnimationView view, String imageAssetsFolder) {
+        view.setImageAssetsFolder(imageAssetsFolder);
+    }
+
+    @ReactProp(name = "scaleType")
+    public void setScaleType(LottieAnimationView view, String type) {
+        try {
+            switch (type) {
+                case "center": {
+                    view.setScaleType(ImageView.ScaleType.CENTER);
+                }
+                break;
+                case "centerCrop": {
+                    view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                }
+                break;
+                case "centerInside": {
+                    view.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                }
+                break;
+                case "fitCenter": {
+                    view.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                }
+                break;
+                case "fitStart": {
+                    view.setScaleType(ImageView.ScaleType.FIT_START);
+                }
+                break;
+                case "fitEnd": {
+                    view.setScaleType(ImageView.ScaleType.FIT_END);
+                }
+                break;
+                case "fitXY": {
+                    view.setScaleType(ImageView.ScaleType.FIT_XY);
+                }
+                break;
+                case "matrix": {
+                    view.setScaleType(ImageView.ScaleType.MATRIX);
+                }
+                break;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "scaleTypeError", e);
+        }
+    }
 }
